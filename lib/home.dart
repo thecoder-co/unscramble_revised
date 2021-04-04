@@ -317,6 +317,7 @@ class _OptionTwo extends StatelessWidget {
           ),
           Center(
             child: ListView.separated(
+              shrinkWrap: true,
               itemCount: 6,
               separatorBuilder: (BuildContext context, int index) {
                 return Column(
