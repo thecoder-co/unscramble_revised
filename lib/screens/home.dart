@@ -335,7 +335,7 @@ class _OptionOne extends StatelessWidget {
               sigmaY: 40.0,
             ),
             child: Container(
-              height: 300,
+              height: 500,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.2),
               ),
@@ -407,91 +407,97 @@ class _OptionTwo extends StatelessWidget {
         bottom: 10,
         top: 10,
       ),
-      child: ListView(
-        children: [
-          Text(
-            '3 Letter words',
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          ListView.separated(
-            shrinkWrap: true,
-            itemCount: 6,
-            separatorBuilder: (BuildContext context, int index) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(index < 4 ? '${index + 4} Letter Words' : 'All Words'),
-                  SizedBox(
-                    height: 10,
-                  ),
-                ],
-              );
-            },
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 24,
-                      spreadRadius: 3,
-                      color: Colors.black.withOpacity(0.2),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 70, bottom: 10),
+              child: Text(
+                '3 Letter words',
+                textAlign: TextAlign.center,
+              ),
+            ),
+            ListView.separated(
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.only(
+                bottom: 60,
+              ),
+              shrinkWrap: true,
+              itemCount: 6,
+              separatorBuilder: (BuildContext context, int index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(index < 4 ? '${index + 4} Letter Words' : 'All Words'),
+                    SizedBox(
+                      height: 10,
                     ),
                   ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: 40.0,
-                      sigmaY: 40.0,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 20.0,
-                        right: 20.0,
+                );
+              },
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 24,
+                        spreadRadius: 3,
+                        color: Colors.black.withOpacity(0.2),
                       ),
-                      child: Container(
-                        height: words[index].length < 4 ? 75 : 300,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(16.0),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16.0),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: 40.0,
+                        sigmaY: 40.0,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20.0,
+                          right: 20.0,
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListView.separated(
-                            itemCount: words[index].length,
-                            separatorBuilder: (context, index) => Divider(
-                              color: Colors.white,
-                            ),
-                            itemBuilder: (context, index1) => Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Center(
-                                child: ListTile(
-                                  onLongPress: () {
-                                    Clipboard.setData(
-                                      ClipboardData(
-                                        text: words[index][index1],
+                        child: Container(
+                          height: words[index].length < 4 ? 75 : 300,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListView.separated(
+                              itemCount: words[index].length,
+                              separatorBuilder: (context, index) => Divider(
+                                color: Colors.white,
+                              ),
+                              itemBuilder: (context, index1) => Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: ListTile(
+                                    onLongPress: () {
+                                      Clipboard.setData(
+                                        ClipboardData(
+                                          text: words[index][index1],
+                                        ),
+                                      );
+                                      Scaffold.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                              '${words[index][index1]} copied to clipboard'),
+                                        ),
+                                      );
+                                    },
+                                    dense: true,
+                                    title: Center(
+                                      child: Text(
+                                        words[index][index1],
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 20),
                                       ),
-                                    );
-                                    Scaffold.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            '${words[index][index1]} copied to clipboard'),
-                                      ),
-                                    );
-                                  },
-                                  dense: true,
-                                  title: Center(
-                                    child: Text(
-                                      words[index][index1],
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 20),
                                     ),
                                   ),
                                 ),
@@ -502,14 +508,11 @@ class _OptionTwo extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
-          SizedBox(
-            height: 400,
-          ),
-        ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

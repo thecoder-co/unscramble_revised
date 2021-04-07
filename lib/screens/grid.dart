@@ -1,7 +1,8 @@
 import 'dart:ui';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 //import 'package:flutter_mobile_vision/flutter_mobile_vision.dart' hide Size;
 import 'package:flutter/material.dart';
-
 
 class Grid extends StatefulWidget {
   Grid({Key key}) : super(key: key);
@@ -11,6 +12,56 @@ class Grid extends StatefulWidget {
 }
 
 class _GridState extends State<Grid> {
+  int _selectedIndex = 0;
+
+  String _fileState = 'No Picture Chosen';
+
+  String _result;
+
+  File _file;
+
+  _onSubmit() {}
+
+  _onChange() {
+    setState(() {
+      _fileState = 'Picture Chosen From Camera';
+    });
+  }
+
+  _chooseFile() async {
+    FilePickerResult result = await FilePicker.platform.pickFiles();
+
+    File file;
+
+    if (result != null) {
+      file = File(result.files.single.path);
+      print(file.toString());
+      setState(() {
+        _fileState = 'File Chosen From Files';
+        _file = file;
+      });
+    }
+  }
+
+  _onUnscramble() {}
+
+  List<Widget> _widgetOptions() => <Widget>[
+        _OptionOne(
+          onUnscramble: _onUnscramble,
+          onChange: _onChange,
+          onSubmit: _onSubmit,
+          fileState: _fileState,
+          chooseFile: _chooseFile,
+        ),
+        _OptionTwo()
+      ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -138,7 +189,7 @@ class _GridState extends State<Grid> {
             ),
           ),
           body: Center(
-            child: Text('grid'), //_widgetOptions().elementAt(_selectedIndex),
+            child: _widgetOptions().elementAt(_selectedIndex),
           ),
           bottomNavigationBar: PreferredSize(
             child: ClipRRect(
@@ -150,8 +201,8 @@ class _GridState extends State<Grid> {
                 child: BottomNavigationBar(
                   backgroundColor: Colors.white.withOpacity(0.2),
                   selectedItemColor: Colors.black,
-                  /*onTap: _onItemTapped,
-                currentIndex: _selectedIndex,*/
+                  onTap: _onItemTapped,
+                  currentIndex: _selectedIndex,
                   elevation: 0,
                   items: [
                     BottomNavigationBarItem(
@@ -173,6 +224,128 @@ class _GridState extends State<Grid> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _OptionOne extends StatelessWidget {
+  final String fileState;
+  final Function onSubmit;
+  final Function onChange;
+  final Function onUnscramble;
+  final Function chooseFile;
+  _OptionOne(
+      {this.onUnscramble,
+      this.onChange,
+      this.onSubmit,
+      this.fileState,
+      this.chooseFile});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 24,
+              spreadRadius: 3,
+              color: Colors.black.withOpacity(0.2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.0),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: 40.0,
+              sigmaY: 40.0,
+            ),
+            child: Container(
+              height: 450,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+              ),
+              child: Center(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: SizedBox(
+                        height: 250,
+                        child: Container(
+                          color: Colors.amber,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                            child: Text(
+                              'Choose File',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 24,
+                              ),
+                            ),
+                            onPressed: () async {
+                              await chooseFile();
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.camera_alt_rounded),
+                            onPressed: null,
+                          ),
+                          TextButton(
+                            child: Text(
+                              'Unscramble',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 24,
+                              ),
+                            ),
+                            onPressed: () async {
+                              await onUnscramble();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Spacer(),
+                    Text(
+                      fileState,
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OptionTwo extends StatelessWidget {
+  const _OptionTwo({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text('OptionTwo'),
     );
   }
 }
